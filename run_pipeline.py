@@ -24,7 +24,7 @@ warnings.filterwarnings("ignore")
 
 class Args:
   def __init__(self, videofile, data_dir):
-    self.logs = "/home/shoh25/data_verification.csv"
+    self.logs = "/home/seokje/data_verification.csv"
     self.initial_model = "data/syncnet_v2.model"
     self.batch_size = 64
     self.vshift = 15
@@ -377,7 +377,7 @@ def process(i, video_path, interval, start_time, s, DET):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--data-root", type=str, required=True)
-parser.add_argument("--logs", type=str, default="/home/shoh25/data_verification.csv")
+parser.add_argument("--logs", type=str, default="/home/seokje/data_verification.csv")
 opt = parser.parse_args()
 
 from pathlib import Path
