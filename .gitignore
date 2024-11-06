@@ -1,0 +1,9 @@
+# Pycharm
+.idea/
+
+# venv
+venv/
+
+# SyncNet data
+data/
+detectors/
