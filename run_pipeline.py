@@ -264,8 +264,8 @@ def scene_detect(opt):
 # ========== ========== ========== ==========
 def main(args):
   # define syncnet model
-  s = SyncNetInstance();
-  s.loadParameters("data/syncnet_v2.model");
+  s = SyncNetInstance()
+  s.loadParameters("data/syncnet_v2.model")
   # define detector model
   DET = S3FD(device='cuda')
 
