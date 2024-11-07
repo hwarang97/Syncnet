@@ -368,9 +368,16 @@ def process(i, video_path, interval, start_time, s, DET):
     return None
   for idx, fname in enumerate(flist):
     offset, conf, dist, offset, minval, conf = s.evaluate(opt,videofile=fname)
-    with open(opt.video_validation_log, "a") as f:
+
+    if os.path.exists(video_validation_log):
+      os.remove(video_validation_log)
+
+    with open(video_validation_log, "a") as f:
       f.write(f"{opt.videofile},{start_time-1},{offset},{minval:.3f},{conf:.3f},{time.time() - st:.3f}\n")
     dists.append(dist)
+
+  with open(opt.logs, 'a') as f:
+    f.write(f"{opt.videofile}\n")
         
   # ==================== PRINT RESULTS TO FILE ====================
 
