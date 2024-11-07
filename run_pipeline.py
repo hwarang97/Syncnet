@@ -301,10 +301,8 @@ def process(i, video_path, interval, start_time, s, DET):
   print(i, output_path, "is being processed")
   opt = Args(video_path, os.path.join("processing", output_path))
 
-  # set csv path per video
-  current_path = os.path.dirname(opt.logs)
-  video_validation_log_path = os.path.join(current_path, 'syncnet_results', output_path + '.csv')
-  opt.video_validation_log = video_validation_log_path
+  # log path to store validation per video
+  video_validation_log = os.path.join(os.path.dirname(video_path), video_name + '.csv')
 
   # ========== DELETE EXISTING DIRECTORIES ==========
 
