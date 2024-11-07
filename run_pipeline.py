@@ -300,6 +300,12 @@ def process(i, video_path, interval, start_time, s, DET):
   output_path = video_dir + "_" + video_name + "_" + str(interval)
   print(i, output_path, "is being processed")
   opt = Args(video_path, os.path.join("processing", output_path))
+
+  # set csv path per video
+  current_path = os.path.dirname(opt.logs)
+  video_validation_log_path = os.path.join(current_path, 'syncnet_results', output_path + '.csv')
+  opt.video_validation_log = video_validation_log_path
+
   # ========== DELETE EXISTING DIRECTORIES ==========
 
   if os.path.exists(os.path.join(opt.work_dir,opt.reference)):
@@ -364,7 +370,7 @@ def process(i, video_path, interval, start_time, s, DET):
     return None
   for idx, fname in enumerate(flist):
     offset, conf, dist, offset, minval, conf = s.evaluate(opt,videofile=fname)
-    with open(opt.logs, "a") as f:
+    with open(opt.video_validation_log, "a") as f:
       f.write(f"{opt.videofile},{start_time-1},{offset},{minval:.3f},{conf:.3f},{time.time() - st:.3f}\n")
     dists.append(dist)
         
