@@ -278,18 +278,35 @@ def main(args):
       break
   df = pd.read_csv(os.path.join(dir_path, csv_path), header=None)
   time_steps = [df[2].iloc()[i].item() for i, j in enumerate(df[1].iloc()) if j == "OK"]
-  while True:
-    interval = random.randint(5, 45)
+
+  # test, 출력문이 데이터당 한 줄씩 출력 되도록 변경
+  pathes = video_path.split("/")
+  video_dir = pathes[-2]
+  video_name = pathes[-1].split(".")[0]
+  output_path = video_dir + "_" + video_name
+  print(i, output_path, "is being processed")
+
+  # log path to store validation per video
+  video_validation_log = os.path.join(os.path.dirname(video_path), video_name + '.csv')
+
+  # initialize csv file
+  if os.path.exists(video_validation_log):
+    os.remove(video_validation_log)
+  with open(video_validation_log, "a") as f:
+    f.write(f"{video_path}")
+
+  # TODO: 첫 구간도 추가 (구간 추가시, postproceeing 로직 가져오기)
+  for interval in range(0, 48):
     start_time = int((time_steps[interval+1] + time_steps[interval]) // 2)
     try:
-      result = process(i, video_path, interval, start_time, s, DET)
-      if result is None:
+      process(i, video_path, interval, start_time, s, DET)
+    except Exception as e:
+      with open('exceptions.log', 'a') as f:
+        f.write(f'{video_path},{interval}\n')
         continue
-      else:
-        return
-    except:
-      continue
 
+  with open(opt.logs, 'a') as f:
+    f.write(f"{video_path}\n")
 
 def process(i, video_path, interval, start_time, s, DET):
   st = time.time()
@@ -298,7 +315,7 @@ def process(i, video_path, interval, start_time, s, DET):
   video_dir = pathes[-2]
   video_name = pathes[-1].split(".")[0]
   output_path = video_dir + "_" + video_name + "_" + str(interval)
-  print(i, output_path, "is being processed")
+  # print(i, output_path, "is being processed")
   opt = Args(video_path, os.path.join("processing", output_path))
 
   # log path to store validation per video
@@ -366,19 +383,20 @@ def process(i, video_path, interval, start_time, s, DET):
   dists = []
   if not flist:
     return None
+
+  # initialize csv file
+  # if os.path.exists(video_validation_log):
+  #   os.remove(video_validation_log)
+  # with open(video_validation_log, "a") as f:
+  #   f.write(f"{opt.videofile}")
+
   for idx, fname in enumerate(flist):
     offset, conf, dist, offset, minval, conf = s.evaluate(opt,videofile=fname)
 
-    if os.path.exists(video_validation_log):
-      os.remove(video_validation_log)
-
     with open(video_validation_log, "a") as f:
-      f.write(f"{opt.videofile},{start_time-1},{offset},{minval:.3f},{conf:.3f},{time.time() - st:.3f}\n")
+      # f.write(f"{opt.videofile},{start_time-1},{offset},{minval:.3f},{conf:.3f},{time.time() - st:.3f}\n")
+      f.write(f",{offset}")
     dists.append(dist)
-
-  with open(opt.logs, 'a') as f:
-    f.write(f"{opt.videofile}\n")
-        
   # ==================== PRINT RESULTS TO FILE ====================
 
   torch.cuda.empty_cache()
